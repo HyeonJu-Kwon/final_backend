@@ -1,0 +1,39 @@
+from flask import Flask
+from flask_session import Session
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+from flask_cors import CORS
+import os
+
+load_dotenv()
+
+db = SQLAlchemy()
+
+def create_app():
+    app = Flask(__name__)
+     
+    app.secret_key = os.getenv('FLASK_SECRET_KEY')  
+
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['SESSION_PERMANENT'] = False
+    Session(app)
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+     
+    print("🧩 SQLALCHEMY_DATABASE_URI =", app.config['SQLALCHEMY_DATABASE_URI'])
+ 
+    db.init_app(app)
+    CORS(app, supports_credentials=True)
+
+    from app.routes.attendance import bp as attendance_bp
+    app.register_blueprint(attendance_bp)
+
+    from app.routes.user import bp as user_bp
+    app.register_blueprint(user_bp)
+    
+    from app.routes.club import bp as club_bp
+    app.register_blueprint(club_bp)
+   
+    return app
