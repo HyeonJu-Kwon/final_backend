@@ -10,3 +10,10 @@
 
 ---
 
+##  업로드 파일 요약
+app 파일
+- `routes/` : 사용자, 출석 등 REST API 정의
+- `models/` : SQLAlchemy 모델 (User, Attendance 등)
+- `config.py` : DB 연결, 시크릿 키 등 설정
+- `init_db.py` : create_all()로 테이블 자동 생성
+- `run.py` : 백엔드 실행용 메인 엔트리포인트
